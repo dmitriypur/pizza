@@ -1,0 +1,15 @@
+@import "~bootstrap";
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #fff;
+}
+
+
+img {
+    width: 100%;
+    height: auto;
+}
