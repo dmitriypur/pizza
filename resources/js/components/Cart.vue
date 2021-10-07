@@ -8,6 +8,7 @@
             </router-link>
             <p v-if="!cart_data.length">Корзина пока пустая...</p>
             <CartItem
+                    v-if="isShow"
                     v-for="(item, index) in cart_data"
                     :key="item.article"
                     :cart_item_data="item"
@@ -47,7 +48,9 @@
             }
         },
         data() {
-            return {};
+            return {
+                isShow: true
+            };
         },
         computed: {
             cartTotalCost() {
@@ -78,10 +81,8 @@
                 let fd = new FormData();
 
                 let cartObj = new Array()
-                console.log(cartData)
                 fd.append("name", form.name);
                 fd.append("phone", form.phone);
-                // fd.append("csrf", form.csrf);
                 cartData.forEach((el, i) => {
                     cartObj.push([
                         el.title,
@@ -94,10 +95,16 @@
                 axios
                     .post("sendmail", fd)
                     .then(function (response) {
-                        console.log(response);
+
+                        if(response.data == 1){
+                            localStorage.removeItem("prod");
+                            form.name = null
+                            form.phone = null
+                            window.location='/'
+                        }
                     })
                     .catch(function () {
-                        console.log("FAILURE!!");
+                        alert('Ошибка отправки! Попробуйте позже')
                     });
             },
 
@@ -115,7 +122,10 @@
 
                 this.DELETE_FROM_CART(index);
             }
-        }
+        },
+        updated() {
+            console.log('updated');
+        },
     };
 </script>
 

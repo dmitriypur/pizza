@@ -2132,6 +2132,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 
 
@@ -2151,7 +2152,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     }
   },
   data: function data() {
-    return {};
+    return {
+      isShow: true
+    };
   },
   computed: {
     cartTotalCost: function cartTotalCost() {
@@ -2185,18 +2188,21 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var cartData = this.cart_data;
       var fd = new FormData();
       var cartObj = new Array();
-      console.log(cartData);
       fd.append("name", form.name);
-      fd.append("phone", form.phone); // fd.append("csrf", form.csrf);
-
+      fd.append("phone", form.phone);
       cartData.forEach(function (el, i) {
         cartObj.push([el.title, el.price, el.quantity]);
       });
       fd.append("product", JSON.stringify(cartObj));
       axios__WEBPACK_IMPORTED_MODULE_2___default().post("sendmail", fd).then(function (response) {
-        console.log(response);
+        if (response.data == 1) {
+          localStorage.removeItem("prod");
+          form.name = null;
+          form.phone = null;
+          window.location = '/';
+        }
       })["catch"](function () {
-        console.log("FAILURE!!");
+        alert('Ошибка отправки! Попробуйте позже');
       });
     },
     decrement: function decrement(index) {
@@ -2212,7 +2218,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       this.DELETE_FROM_CART(index);
     }
-  })
+  }),
+  updated: function updated() {
+    console.log('updated');
+  }
 });
 
 /***/ }),
@@ -21748,21 +21757,23 @@ var render = function() {
           : _vm._e(),
         _vm._v(" "),
         _vm._l(_vm.cart_data, function(item, index) {
-          return _c("CartItem", {
-            key: item.article,
-            attrs: { cart_item_data: item },
-            on: {
-              deleteFromCart: function($event) {
-                return _vm.deleteFromCart(index)
-              },
-              increment: function($event) {
-                return _vm.increment(index)
-              },
-              decrement: function($event) {
-                return _vm.decrement(index)
-              }
-            }
-          })
+          return _vm.isShow
+            ? _c("CartItem", {
+                key: item.article,
+                attrs: { cart_item_data: item },
+                on: {
+                  deleteFromCart: function($event) {
+                    return _vm.deleteFromCart(index)
+                  },
+                  increment: function($event) {
+                    return _vm.increment(index)
+                  },
+                  decrement: function($event) {
+                    return _vm.decrement(index)
+                  }
+                }
+              })
+            : _vm._e()
         }),
         _vm._v(" "),
         _vm.cart_data.length
