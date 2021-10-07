@@ -2184,14 +2184,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     sendOrder: function sendOrder(form) {
       var cartData = this.cart_data;
       var fd = new FormData();
+      var cartObj = new Array();
+      console.log(cartData);
       fd.append("name", form.name);
-      fd.append("phone", form.phone);
-      cartData.forEach(function (el) {
-        fd.append(el.title, [el.price, el.quantity]);
+      fd.append("phone", form.phone); // fd.append("csrf", form.csrf);
+
+      cartData.forEach(function (el, i) {
+        cartObj.push([el.title, el.price, el.quantity]);
       });
-      axios__WEBPACK_IMPORTED_MODULE_2___default().post("http://localhost:8888/rabota-form/dist/mail.php", fd).then(function (response) {
+      fd.append("product", JSON.stringify(cartObj));
+      axios__WEBPACK_IMPORTED_MODULE_2___default().post("sendmail", fd).then(function (response) {
         console.log(response);
-        console.log("SUCCESS!!");
       })["catch"](function () {
         console.log("FAILURE!!");
       });
@@ -2339,7 +2342,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   mounted: function mounted() {
     this.SAVE_CART();
     this.GET_PRODUCTS_FROM_API();
-    console.log(this.CART);
   }
 });
 
@@ -2363,13 +2365,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Form",
   data: function data() {
     return {
       form: {
         name: "",
-        phone: ""
+        phone: "",
+        csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       }
     };
   },
@@ -2745,7 +2749,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
   actions: {
     GET_PRODUCTS_FROM_API: function GET_PRODUCTS_FROM_API(_ref) {
       var commit = _ref.commit;
-      return axios__WEBPACK_IMPORTED_MODULE_0___default()("http://localhost/Laravel-api/example-app/public/api/products", {
+      return axios__WEBPACK_IMPORTED_MODULE_0___default()("api/products", {
         method: "GET"
       }).then(function (products) {
         commit('SET_PRODUCTS_TO_STATE', products.data.data);
@@ -21768,7 +21772,7 @@ var render = function() {
         _vm.cart_data.length
           ? _c("div", { staticClass: "v-cart--total" }, [
               _c("p", [
-                _vm._v("\n\t\t\t\tИтог:\n\t\t\t\t"),
+                _vm._v("\n                Итог:\n                "),
                 _c("span", [_vm._v(_vm._s(_vm.cartTotalCost) + " Р")])
               ])
             ])
@@ -21970,6 +21974,8 @@ var render = function() {
             }
           }
         }),
+        _vm._v(" "),
+        _c("input", { attrs: { type: "hidden", name: "_token" } }),
         _vm._v(" "),
         _c("button", [_vm._v("Заказать")])
       ]

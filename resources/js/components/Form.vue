@@ -3,6 +3,7 @@
 		<form @submit.prevent="sendOrder(form)" id="form">
 			<input type="text" name="name" v-model="form.name" placeholder="Имя" />
 			<input type="tel" name="phone" v-model="form.phone" placeholder="Телефон" />
+			<input type="hidden" name="_token" >
 			<button>Заказать</button>
 		</form>
 	</div>
@@ -15,8 +16,10 @@
 			return {
 				form: {
 					name: "",
-					phone: ""
-				}
+					phone: "",
+					csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+				},
+
 			};
 		},
 		methods: {

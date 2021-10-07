@@ -61,8 +61,6 @@
 		mounted() {
 			this.SAVE_CART();
 			this.GET_PRODUCTS_FROM_API();
-
-			console.log(this.CART)
 		}
 	};
 </script>

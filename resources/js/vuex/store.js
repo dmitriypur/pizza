@@ -70,7 +70,7 @@ let store = new Vuex.Store({
     },
     actions: {
         GET_PRODUCTS_FROM_API({commit}){
-            return axios("http://localhost/Laravel-api/example-app/public/api/products", {
+            return axios("api/products", {
                 method: "GET"
             })
                 .then((products) => {
