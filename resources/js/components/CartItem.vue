@@ -103,7 +103,6 @@
 			border-radius: 4px;
 			color: #ef0031;
 			cursor: pointer;
-			background: transparent;
 			width: auto;
 			border: 2px solid #ef0031;
 		}

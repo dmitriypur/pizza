@@ -1,13 +1,13 @@
 <template>
-	<div class="col-lg-3 col-md-4 col-sm-6 main-card">
+	<div class="col-lg-3 col-md-4 col-sm-6">
 		<div class="center-text mb-30">
 			<transition name="pu">
 				<Popup
-					v-if="isPopupVisible"
-					@closePopup="closePopup"
-					@modalBtnToCart="Добавить"
-					:popupTitle="products_data.title"
-					@btnAction="addToCart"
+						v-if="isPopupVisible"
+						@closePopup="closePopup"
+						@modalBtnToCart="Добавить"
+						:popupTitle="products_data.title"
+						@btnAction="addToCart"
 				>
 					<img :src="'../../images/' + products_data.image" alt />
 					<div class="info">
@@ -110,18 +110,6 @@
 	.pu-leave-to {
 		opacity: 0;
 	}
-	
-	.main-card{
-		margin: 0 10px;
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
-		border-left: 1px solid rgba(255, 255, 255, 0.15);
-		border-top: 1px solid rgba(255, 255, 255, 0.2);
-		box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.81);
-		width: calc(100% / 4 - 20px);
-		margin-bottom: 40px;
-		padding: 10px;
-	}
 
 	.v-product {
 		border: 1px solid #ccc;
@@ -173,7 +161,6 @@
 				cursor: pointer;
 				width: auto;
 				outline: none;
-				background: transparent;
 			}
 			.info-btn {
 				color: #1b8ec4;

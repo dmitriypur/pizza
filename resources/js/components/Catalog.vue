@@ -1,6 +1,6 @@
 <template>
 	<transition name="ct" mode="out-in">
-		<div class="row pb-5">
+		<div class="row">
 			<router-link :to="{name: 'cart', params: {cart_data: CART}}">
 				<transition name="mc" mode="out-in">
 					<div v-if="CART.length" class="link-to-cart">
@@ -12,15 +12,11 @@
 					</div>
 				</transition>
 			</router-link>
-
-			<div class="container">
-				<h3 class="catalog-title">Доставка пиццы</h3>
-			</div>
 			<Product
-				v-for="product in PRODUCTS"
-				:key="product.article"
-				:products_data="product"
-				@addToCart="addToCart"
+					v-for="product in PRODUCTS"
+					:key="product.article"
+					:products_data="product"
+					@addToCart="addToCart"
 			/>
 		</div>
 	</transition>
@@ -65,6 +61,8 @@
 		mounted() {
 			this.SAVE_CART();
 			this.GET_PRODUCTS_FROM_API();
+
+			console.log(this.CART)
 		}
 	};
 </script>
@@ -92,12 +90,6 @@
 	}
 	.mc-enter-active {
 		transition: 0.3s;
-	}
-	.catalog-title{
-		text-align: center;
-		color: #fffeec;
-		margin: 50px 0;
-		text-transform: uppercase;
 	}
 	.v-catalog {
 		display: flex;

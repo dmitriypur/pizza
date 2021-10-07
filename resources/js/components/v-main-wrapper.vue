@@ -13,7 +13,7 @@
 			return {
 				title: "Main wrapper"
 			};
-		}
+		},
 	};
 </script>
 

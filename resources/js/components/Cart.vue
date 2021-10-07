@@ -8,12 +8,12 @@
 			</router-link>
 			<p v-if="!cart_data.length">Корзина пока пустая...</p>
 			<CartItem
-				v-for="(item, index) in cart_data"
-				:key="item.article"
-				:cart_item_data="item"
-				@deleteFromCart="deleteFromCart(index)"
-				@increment="increment(index)"
-				@decrement="decrement(index)"
+					v-for="(item, index) in cart_data"
+					:key="item.article"
+					:cart_item_data="item"
+					@deleteFromCart="deleteFromCart(index)"
+					@increment="increment(index)"
+					@decrement="decrement(index)"
 			/>
 			<v-form v-if="cart_data.length" @sendOrder="sendOrder" />
 			<div v-if="cart_data.length" class="v-cart--total">
@@ -84,14 +84,14 @@
 					fd.append(el.title, [el.price, el.quantity]);
 				});
 				axios
-					.post("http://localhost:8888/rabota-form/dist/mail.php", fd)
-					.then(function(response) {
-						console.log(response);
-						console.log("SUCCESS!!");
-					})
-					.catch(function() {
-						console.log("FAILURE!!");
-					});
+						.post("http://localhost:8888/rabota-form/dist/mail.php", fd)
+						.then(function(response) {
+							console.log(response);
+							console.log("SUCCESS!!");
+						})
+						.catch(function() {
+							console.log("FAILURE!!");
+						});
 			},
 
 			decrement(index) {
@@ -136,11 +136,10 @@
 	}
 
 	.v-cart {
-		padding: 100px 0;
+		padding-bottom: 100px;
 
 		p {
 			color: #fff;
-			text-align: center;
 		}
 	}
 
