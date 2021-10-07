@@ -140,6 +140,7 @@
 
 		p {
 			color: #fff;
+			text-align: center;
 		}
 	}
 

@@ -104,6 +104,7 @@
 			color: #ef0031;
 			cursor: pointer;
 			width: auto;
+			background: transparent;
 			border: 2px solid #ef0031;
 		}
 

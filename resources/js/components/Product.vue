@@ -1,5 +1,5 @@
 <template>
-	<div class="col-lg-3 col-md-4 col-sm-6">
+	<div class="col-md-4 col-sm-6 main-card">
 		<div class="center-text mb-30">
 			<transition name="pu">
 				<Popup
@@ -111,6 +111,11 @@
 		opacity: 0;
 	}
 
+	.main-card{
+		margin: 0 0 40px;
+		padding: 10px;
+	}
+
 	.v-product {
 		border: 1px solid #ccc;
 		border-radius: 4px;
@@ -161,6 +166,7 @@
 				cursor: pointer;
 				width: auto;
 				outline: none;
+				background: transparent;
 			}
 			.info-btn {
 				color: #1b8ec4;

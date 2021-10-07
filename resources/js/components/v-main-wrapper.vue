@@ -1,5 +1,6 @@
 <template>
 	<div class="v-main-wrapper">
+		<h2>{{title}}</h2>
 		<keep-alive>
 			<router-view></router-view>
 		</keep-alive>
@@ -11,7 +12,7 @@
 		name: "v-main-wrapper",
 		data() {
 			return {
-				title: "Main wrapper"
+				title: "Доставка пиццы"
 			};
 		},
 	};
@@ -21,5 +22,11 @@
 	.v-main-wrapper {
 		max-width: 1200px;
 		margin: 0 auto;
+		padding: 0 10px;
+	}
+	h2{
+		text-align: center;
+		margin-bottom: 50px;
+		color: #ffffff;
 	}
 </style>
