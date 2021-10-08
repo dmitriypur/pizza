@@ -8,7 +8,6 @@
             </router-link>
             <p v-if="!cart_data.length">Корзина пока пустая...</p>
             <CartItem
-                    v-if="isShow"
                     v-for="(item, index) in cart_data"
                     :key="item.article"
                     :cart_item_data="item"
@@ -16,6 +15,7 @@
                     @increment="increment(index)"
                     @decrement="decrement(index)"
             />
+            <p class="error" v-if="isShow">{{mess}}</p>
             <v-form v-if="cart_data.length" @sendOrder="sendOrder"/>
             <div v-if="cart_data.length" class="v-cart--total">
                 <p>
@@ -49,7 +49,9 @@
         },
         data() {
             return {
-                isShow: true
+                isShow: false,
+                showSend: false,
+                mess: ''
             };
         },
         computed: {
@@ -73,12 +75,17 @@
             ...mapActions([
                 "DELETE_FROM_CART",
                 "INCREMENT_CART_ITEM",
-                "DECREMENT_CART_ITEM"
+                "DECREMENT_CART_ITEM",
+                "DELETE_ALL_CART"
             ]),
 
             sendOrder(form) {
                 let cartData = this.cart_data;
                 let fd = new FormData();
+                let self = this;
+
+                self.mess = 'Отправляем...'
+                self.isShow = true
 
                 let cartObj = new Array()
                 fd.append("name", form.name);
@@ -94,18 +101,21 @@
 
                 axios
                     .post("sendmail", fd)
-                    .then(function (response) {
 
-                        if(response.data == 1){
-                            localStorage.removeItem("prod");
+                    .then(function (response) {
+                        if(response.statusText == 'OK'){
+                            self.mess = 'Отправлено'
                             form.name = null
                             form.phone = null
-                            window.location='/'
+                            self.$router.push({ name: "catalog"})
+                            self.deleteCart()
                         }
                     })
-                    .catch(function () {
-                        alert('Ошибка отправки! Попробуйте позже')
+                    .catch(function (e) {
+                        self.mess = 'Заполните обязательные поля'
+                        self.isShow = true
                     });
+
             },
 
             decrement(index) {
@@ -121,10 +131,16 @@
                 }
 
                 this.DELETE_FROM_CART(index);
-            }
-        },
-        updated() {
-            console.log('updated');
+            },
+            deleteCart() {
+                for(let item in this.cart_data){
+                    if (this.cart_data[item].available != undefined) {
+                        this.cart_data[item].available = true;
+                    }
+                }
+                    // this.cart_data.available = true;
+                this.DELETE_ALL_CART();
+            },
         },
     };
 </script>
@@ -158,6 +174,12 @@
         p {
             color: #fff;
             text-align: center;
+
+            &.error{
+                color: #ef0031;
+                margin: 0;
+                font-size: 14px;
+            }
         }
     }
 
@@ -192,4 +214,5 @@
             font-size: 20px;
         }
     }
+
 </style>

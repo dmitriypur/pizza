@@ -16,7 +16,6 @@ let store = new Vuex.Store({
             state.products = products;
         },
         SET_CART: (state, product) => {
-            console.log(state.cart)
             if (state.cart.length) {
                 let isProductExists = false;
                 state.cart.map(function (item) {
@@ -37,6 +36,17 @@ let store = new Vuex.Store({
 
         REMOVE_FROM_CART: (state, index) => {
             state.cart.splice(index, 1)
+            localStorage.removeItem("prod");
+            localStorage.setItem("prod", JSON.stringify(state.cart));
+
+            let cartLS = JSON.parse(localStorage.getItem('prod'));
+            if(cartLS.length == 0){
+                localStorage.removeItem('prod');
+            }
+        },
+
+        REMOVE_ALL_CART: (state) => {
+            state.cart = []
             localStorage.removeItem("prod");
             localStorage.setItem("prod", JSON.stringify(state.cart));
 
@@ -95,6 +105,9 @@ let store = new Vuex.Store({
 
         DELETE_FROM_CART({commit}, index){
             commit('REMOVE_FROM_CART', index)
+        },
+        DELETE_ALL_CART({commit}){
+            commit('REMOVE_ALL_CART')
         },
         SAVE_CART({commit}){
             commit('SAVE')

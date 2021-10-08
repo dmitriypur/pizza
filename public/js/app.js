@@ -2153,7 +2153,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   data: function data() {
     return {
-      isShow: true
+      isShow: false,
+      showSend: false,
+      mess: ''
     };
   },
   computed: {
@@ -2183,10 +2185,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return result;
     }
   },
-  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapActions)(["DELETE_FROM_CART", "INCREMENT_CART_ITEM", "DECREMENT_CART_ITEM"])), {}, {
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapActions)(["DELETE_FROM_CART", "INCREMENT_CART_ITEM", "DECREMENT_CART_ITEM", "DELETE_ALL_CART"])), {}, {
     sendOrder: function sendOrder(form) {
       var cartData = this.cart_data;
       var fd = new FormData();
+      var self = this;
+      self.mess = 'Отправляем...';
+      self.isShow = true;
       var cartObj = new Array();
       fd.append("name", form.name);
       fd.append("phone", form.phone);
@@ -2195,14 +2200,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
       fd.append("product", JSON.stringify(cartObj));
       axios__WEBPACK_IMPORTED_MODULE_2___default().post("sendmail", fd).then(function (response) {
-        if (response.data == 1) {
-          localStorage.removeItem("prod");
+        if (response.statusText == 'OK') {
+          self.mess = 'Отправлено';
           form.name = null;
           form.phone = null;
-          window.location = '/';
+          self.$router.push({
+            name: "catalog"
+          });
+          self.deleteCart();
         }
-      })["catch"](function () {
-        alert('Ошибка отправки! Попробуйте позже');
+      })["catch"](function (e) {
+        self.mess = 'Заполните обязательные поля';
+        self.isShow = true;
       });
     },
     decrement: function decrement(index) {
@@ -2217,11 +2226,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
 
       this.DELETE_FROM_CART(index);
+    },
+    deleteCart: function deleteCart() {
+      for (var item in this.cart_data) {
+        if (this.cart_data[item].available != undefined) {
+          this.cart_data[item].available = true;
+        }
+      } // this.cart_data.available = true;
+
+
+      this.DELETE_ALL_CART();
     }
-  }),
-  updated: function updated() {
-    console.log('updated');
-  }
+  })
 });
 
 /***/ }),
@@ -2706,8 +2722,6 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
       state.products = products;
     },
     SET_CART: function SET_CART(state, product) {
-      console.log(state.cart);
-
       if (state.cart.length) {
         var isProductExists = false;
         state.cart.map(function (item) {
@@ -2726,6 +2740,16 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
     },
     REMOVE_FROM_CART: function REMOVE_FROM_CART(state, index) {
       state.cart.splice(index, 1);
+      localStorage.removeItem("prod");
+      localStorage.setItem("prod", JSON.stringify(state.cart));
+      var cartLS = JSON.parse(localStorage.getItem('prod'));
+
+      if (cartLS.length == 0) {
+        localStorage.removeItem('prod');
+      }
+    },
+    REMOVE_ALL_CART: function REMOVE_ALL_CART(state) {
+      state.cart = [];
       localStorage.removeItem("prod");
       localStorage.setItem("prod", JSON.stringify(state.cart));
       var cartLS = JSON.parse(localStorage.getItem('prod'));
@@ -2784,8 +2808,12 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
       var commit = _ref5.commit;
       commit('REMOVE_FROM_CART', index);
     },
-    SAVE_CART: function SAVE_CART(_ref6) {
+    DELETE_ALL_CART: function DELETE_ALL_CART(_ref6) {
       var commit = _ref6.commit;
+      commit('REMOVE_ALL_CART');
+    },
+    SAVE_CART: function SAVE_CART(_ref7) {
+      var commit = _ref7.commit;
       commit('SAVE');
     }
   },
@@ -2816,7 +2844,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".ct-enter[data-v-b7f93bea] {\n  opacity: 0;\n}\n.ct-enter-active[data-v-b7f93bea] {\n  transition: 1s;\n}\n.ct-enter-to[data-v-b7f93bea] {\n  opacity: 1;\n}\n.ct-leave-to[data-v-b7f93bea] {\n  opacity: 0;\n}\n.v-cart[data-v-b7f93bea] {\n  padding-bottom: 100px;\n}\n.v-cart p[data-v-b7f93bea] {\n  color: #fff;\n  text-align: center;\n}\n.back-to-catalog[data-v-b7f93bea] {\n  position: fixed;\n  top: 20px;\n  right: 20px;\n  border: 2px solid #ef0031;\n  padding: 10px;\n  border-radius: 4px;\n  cursor: pointer;\n}\n.back-to-catalog p[data-v-b7f93bea] {\n  margin: 0;\n  color: #ef0031;\n}\n.v-cart--total[data-v-b7f93bea] {\n  display: flex;\n  justify-content: center;\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  width: 100%;\n  padding: 30px;\n  background: #29bd0c;\n}\n.v-cart--total p[data-v-b7f93bea] {\n  color: #fff;\n  margin: 0;\n  font-size: 20px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".ct-enter[data-v-b7f93bea] {\n  opacity: 0;\n}\n.ct-enter-active[data-v-b7f93bea] {\n  transition: 1s;\n}\n.ct-enter-to[data-v-b7f93bea] {\n  opacity: 1;\n}\n.ct-leave-to[data-v-b7f93bea] {\n  opacity: 0;\n}\n.v-cart[data-v-b7f93bea] {\n  padding-bottom: 100px;\n}\n.v-cart p[data-v-b7f93bea] {\n  color: #fff;\n  text-align: center;\n}\n.v-cart p.error[data-v-b7f93bea] {\n  color: #ef0031;\n  margin: 0;\n  font-size: 14px;\n}\n.back-to-catalog[data-v-b7f93bea] {\n  position: fixed;\n  top: 20px;\n  right: 20px;\n  border: 2px solid #ef0031;\n  padding: 10px;\n  border-radius: 4px;\n  cursor: pointer;\n}\n.back-to-catalog p[data-v-b7f93bea] {\n  margin: 0;\n  color: #ef0031;\n}\n.v-cart--total[data-v-b7f93bea] {\n  display: flex;\n  justify-content: center;\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  width: 100%;\n  padding: 30px;\n  background: #29bd0c;\n}\n.v-cart--total p[data-v-b7f93bea] {\n  color: #fff;\n  margin: 0;\n  font-size: 20px;\n}\n", ""]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
@@ -21757,24 +21785,26 @@ var render = function() {
           : _vm._e(),
         _vm._v(" "),
         _vm._l(_vm.cart_data, function(item, index) {
-          return _vm.isShow
-            ? _c("CartItem", {
-                key: item.article,
-                attrs: { cart_item_data: item },
-                on: {
-                  deleteFromCart: function($event) {
-                    return _vm.deleteFromCart(index)
-                  },
-                  increment: function($event) {
-                    return _vm.increment(index)
-                  },
-                  decrement: function($event) {
-                    return _vm.decrement(index)
-                  }
-                }
-              })
-            : _vm._e()
+          return _c("CartItem", {
+            key: item.article,
+            attrs: { cart_item_data: item },
+            on: {
+              deleteFromCart: function($event) {
+                return _vm.deleteFromCart(index)
+              },
+              increment: function($event) {
+                return _vm.increment(index)
+              },
+              decrement: function($event) {
+                return _vm.decrement(index)
+              }
+            }
+          })
         }),
+        _vm._v(" "),
+        _vm.isShow
+          ? _c("p", { staticClass: "error" }, [_vm._v(_vm._s(_vm.mess))])
+          : _vm._e(),
         _vm._v(" "),
         _vm.cart_data.length
           ? _c("v-form", { on: { sendOrder: _vm.sendOrder } })
